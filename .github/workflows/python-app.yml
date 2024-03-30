@@ -1,16 +1,21 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Python application
+# This workflow setups a python env to check the GitHub api and generate the stats image
+# This image is then uploaded to GitHub page for the repo its in
+
+name: Lightweight Github Stats
 
 on:
   push:
     branches: [ "main" ]
+
   pull_request:
     branches: [ "main" ]
 
+  schedule:
+    - cron: '0 0 * * 0'
+
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -18,22 +23,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: |
-        pytest
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Check Github API and generate image
+        id: run_test
+        run: |
+          python app/main.py ${{ secrets.api_key }}
+          echo "::set-output name=file_path::${PWD}/data.png"
+
+      - name: Upload to artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: |
+            ${{ steps.run_test.outputs.file_path }}
+            index.html
+  
+
+  deploy:
+    needs: build
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
