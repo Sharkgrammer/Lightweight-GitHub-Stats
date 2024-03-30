@@ -43,7 +43,7 @@ jobs:
       - name: Upload to artifact
         uses: actions/upload-artifact@v4
         with:
-          name: github-pages
+          name: page-build
           path: |
             ${{ steps.run_test.outputs.file_path }}
             index.html
@@ -66,7 +66,7 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: github-pages
+          name: page-build
           path: .
 
       - name: Setup Pages
