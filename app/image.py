@@ -5,14 +5,17 @@ import io
 import settings as s
 import strings as strings
 import matplotlib.pyplot as plt
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
 def create_image(data):
     w = 600
     h = 350
 
-    img = Image.new('RGBA', (w, h), color=(255, 255, 255, 0))
+    if "background_col" in s.IMAGE_THEME:
+        img = Image.new('RGB', (w, h), color=s.IMAGE_THEME["background_col"])
+    else:
+        img = Image.new('RGBA', (w, h), color=(255, 255, 255, 0))
 
     draw = ImageDraw.Draw(img)
 
@@ -25,7 +28,7 @@ def create_image(data):
 
     title_font = ImageFont.load_default(s.TITLE_FONT_SIZE)
     font = ImageFont.load_default(s.ITEM_FONT_SIZE)
-    fill = s.TEXT_COLOUR
+    fill = s.IMAGE_THEME["text_col"]
 
     # Title code
     text = f"{data['name'] if s.TITLE_USE_REAL_NAME else data['username']}{strings.TITLE_POSTFIX}"
@@ -67,19 +70,62 @@ def create_image(data):
 
     item_text_adj = int((s.ITEM_FONT_SIZE / 2))
 
+    icon_fill = s.IMAGE_THEME["icon_col"]
+
     for item in items:
-        add_icon_to_image(img, item, (s.ITEM_STARTING_X, y))
+        add_icon_to_image(img, item, (s.ITEM_STARTING_X, y), icon_fill)
+
         draw.text((x, y + item_text_adj), items[item], fill=fill, font=font)
 
         y += s.ITEM_VADJ
+
+    if "background_col" in s.IMAGE_THEME:
+        img = add_rounded_corners(img, s.IMAGE_BORDER_RADIUS)
 
     img.save("data.png", "PNG", dpi=(300, 300))
     # img.show()
 
 
-def add_icon_to_image(img, icon, xy):
-    img_star = Image.open(f"./app/img/{icon}").convert("RGBA").resize((s.ITEM_IMG_SIZE, s.ITEM_IMG_SIZE))
-    img.paste(img_star, xy, img_star)
+def add_rounded_corners(img, radius):
+    fill = 255
+    double_radius = radius * 2
+    mask = Image.new("L", img.size, 0)
+    draw = ImageDraw.Draw(mask)
+    width, height = img.size
+
+    draw.pieslice((width - double_radius, height - double_radius, width, height), 0, 90, fill=fill)
+    draw.pieslice((0, height - double_radius, double_radius, height), 90, 180, fill=fill)
+    draw.pieslice((0, 0, double_radius, double_radius), 180, 270, fill=fill)
+    draw.pieslice((width - double_radius, 0, width, double_radius), 270, 360, fill=fill)
+
+    draw.rectangle((radius, 0, width - radius, height), fill=fill)
+    draw.rectangle((0, radius, width, height - radius), fill=fill)
+
+    rounded_image = ImageOps.fit(img, mask.size, method=0, bleed=0.0, centering=(0.5, 0.5))
+    rounded_image.putalpha(mask)
+
+    return rounded_image
+
+
+def add_icon_to_image(img, icon, xy, fill):
+    img_icon = Image.open(f"./app/img/{icon}").convert("RGBA")
+
+    icon_data = img_icon.getdata()
+
+    changed_img = []
+    for p in icon_data:
+
+        if p[0] == 255 and p[3] != 0:
+            changed_img.append(fill)
+
+        else:
+            changed_img.append(p)
+
+    img_icon.putdata(changed_img)
+
+    img_icon = img_icon.resize((s.ITEM_IMG_SIZE, s.ITEM_IMG_SIZE))
+
+    img.paste(img_icon, xy, img_icon)
 
     return img
 
@@ -109,9 +155,10 @@ def create_graph(lan):
 
         text = text[:-1]
 
-        ax.text(0, 0, text, size="x-large", ha='center', va='center', color=s.TEXT_COLOUR)
+        ax.text(0, 0, text, size="x-large", ha='center', va='center', color=s.IMAGE_THEME["text_col"])
 
-    plt.pie(values, labels=labels, textprops={'color': s.TEXT_COLOUR, 'size': 'medium'}, wedgeprops={'width': 0.4})
+    plt.pie(values, labels=labels, textprops={'color': s.IMAGE_THEME["text_col"], 'size': 'medium'},
+            wedgeprops={'width': 0.4})
 
     # Finally, convert the figure to a pillow image
     buf = io.BytesIO()

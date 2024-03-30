@@ -37,7 +37,7 @@ jobs:
       - name: Check Github API and generate image
         id: run_test
         run: |
-          python app/main.py ${{ secrets.api_key }}
+          python app/main.py ${{ github.actor }} ${{ secrets.api_key }}
           echo "::set-output name=file_path::${PWD}/data.png"
 
       - name: Upload to artifact

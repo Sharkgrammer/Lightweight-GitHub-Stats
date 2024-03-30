@@ -1,3 +1,5 @@
+from themes import get_theme
+
 # Overall settings
 PUBLIC = False
 PUBLIC_USER = "Sharkgrammer"
@@ -29,4 +31,5 @@ ITEM_STARTING_X = 40
 ITEM_VADJ = 45
 ITEM_TEXT_HADJ = 4
 
-TEXT_COLOUR = "#888888"
+IMAGE_BORDER_RADIUS = 20
+IMAGE_THEME = get_theme("transparent")

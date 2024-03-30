@@ -7,6 +7,7 @@ import sys
 def run():
     print("Starting")
     print("Accessing Github API...")
+
     # use the github api to get data
     github.get_user()
     github.get_repo_data()
@@ -24,14 +25,27 @@ def run():
         github.get_issues()
 
     print("Saving Image...")
+
     # convert data into a nice image
     image.create_image(github.get_data())
     print("Complete!")
 
 
-if len(sys.argv) > 1:
-    github.key = sys.argv[1]
+# If you don't give your api_key but don't set settings to public, auto set to public for your username
+# If you set public manually, it assumes you've set PUBLIC_USER
+if len(sys.argv) > 1 and not s.PUBLIC:
+    s.PUBLIC_USER = sys.argv[1]
+
+if len(sys.argv) > 2:
+    github.key = sys.argv[2]
 else:
     s.PUBLIC = True
 
-run()
+# run()
+
+
+data = {'username': 'Sharkgrammer', 'name': 'Daniel Keane Kelly', 'repos': 26, 'stars': 137,
+        'languages': {'Python': 4, 'Vue': 3, 'AMPL': 1, 'JavaScript': 6, 'ShaderLab': 1, 'C#': 3, 'Java': 7},
+        'commits': 127, 'requests': 0, 'reviews': 0, 'issues': 0}
+
+image.create_image(data)
