@@ -34,6 +34,7 @@ def get_item_amt(item_type, params, url):
 
         if is_item_within_year(items[item_len - 1], item_type):
             total += item_len
+
         else:
             # check the first, for a hopefully faster exit
             if not is_item_within_year(items[0], item_type):
