@@ -41,8 +41,11 @@ jobs:
           python app/main.py ${{ secrets.api_key }}
           echo "::set-output name=file_path::${PWD}/data.png"
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
       - name: Upload to artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v4
         with:
           name: github-pages
           path: |
