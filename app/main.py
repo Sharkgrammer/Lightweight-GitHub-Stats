@@ -29,10 +29,8 @@ def run():
     print("Complete!")
 
 
-k = sys.argv[1]
-
-if k is not None:
-    github.key = k
+if len(sys.argv) > 1:
+    github.key = sys.argv[1]
 else:
     s.PUBLIC = True
 
