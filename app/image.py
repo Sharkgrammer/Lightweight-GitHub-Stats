@@ -12,7 +12,7 @@ def create_image(data):
     w = 600
     h = 350
 
-    img = Image.new('RGB', (w, h), color="#ffffff")
+    img = Image.new('RGBA', (w, h), color=(255, 255, 255, 0))
 
     draw = ImageDraw.Draw(img)
 
