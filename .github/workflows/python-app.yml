@@ -47,10 +47,7 @@ jobs:
       - name: Upload to artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages
-          path: |
-            ${{ steps.run_test.outputs.file_path }}
-            index.html
+          path: index.html
   
 
   deploy:
