@@ -2,7 +2,7 @@ from themes import get_theme
 
 # Overall settings
 PUBLIC = False
-PUBLIC_USER = "Sharkgrammer"
+PUBLIC_USER = ""
 
 # If you provide a key, use these settings to hide certain data
 ALLOW_PRIVATE_REPOS = True
