@@ -1,4 +1,4 @@
-TITLE_POSTFIX = "'s Github Stats"
+TITLE_POSTFIX = "'s GitHub Stats"
 
 ITEM_STAR = "Star"
 ITEM_REPO = "Repo"
