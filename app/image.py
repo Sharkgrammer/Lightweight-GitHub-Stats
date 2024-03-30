@@ -25,7 +25,7 @@ def create_image(data):
 
     title_font = ImageFont.load_default(s.TITLE_FONT_SIZE)
     font = ImageFont.load_default(s.ITEM_FONT_SIZE)
-    fill = "#555555"
+    fill = s.TEXT_COLOUR
 
     # Title code
     text = f"{data['name'] if s.TITLE_USE_REAL_NAME else data['username']}{strings.TITLE_POSTFIX}"
@@ -109,9 +109,9 @@ def create_graph(lan):
 
         text = text[:-1]
 
-        ax.text(0, 0, text, size="x-large", ha='center', va='center', color="#555555")
+        ax.text(0, 0, text, size="x-large", ha='center', va='center', color=s.TEXT_COLOUR)
 
-    plt.pie(values, labels=labels, textprops={'color': '#555555', 'size': 'medium'}, wedgeprops={'width': 0.4})
+    plt.pie(values, labels=labels, textprops={'color': s.TEXT_COLOUR, 'size': 'medium'}, wedgeprops={'width': 0.4})
 
     # Finally, convert the figure to a pillow image
     buf = io.BytesIO()
