@@ -41,11 +41,4 @@ if len(sys.argv) > 2:
 else:
     s.PUBLIC = True
 
-# run()
-
-
-data = {'username': 'Sharkgrammer', 'name': 'Daniel Keane Kelly', 'repos': 26, 'stars': 137,
-        'languages': {'Python': 4, 'Vue': 3, 'AMPL': 1, 'JavaScript': 6, 'ShaderLab': 1, 'C#': 3, 'Java': 7},
-        'commits': 127, 'requests': 0, 'reviews': 0, 'issues': 0}
-
-image.create_image(data)
+run()
