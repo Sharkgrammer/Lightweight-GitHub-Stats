@@ -1,4 +1,3 @@
-
 # This workflow setups a python env to check the GitHub api and generate the stats image
 # This image is then uploaded to GitHub page for the repo its in
 
@@ -41,13 +40,13 @@ jobs:
           python app/main.py ${{ secrets.api_key }}
           echo "::set-output name=file_path::${PWD}/data.png"
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
       - name: Upload to artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          path: index.html
+          name: github-pages
+          path: |
+            ${{ steps.run_test.outputs.file_path }}
+            index.html
   
 
   deploy:
@@ -64,6 +63,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/download-artifact@4
+        with:
+          name: github-pages
+          path: .
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
