@@ -14,20 +14,34 @@
         .image_container {
             width: 600px;
             height: 350px;
-            padding: 10px
+            padding: 20px
         }
     </style>
+
 
 </head>
 <body>
 
-<h1>Seeing this page means your stats should now work</h1>
+<h1>Congratulations!</h1>
 
-<p>Some more explanation will go here!</p>
+<h3>Seeing this page means your stats should now work. </h3>
 
-<p>Your graphs will look like the below</p>
+<p>If you see this page, on your forked version of the repo, it means that the action ran successfully and was able to
+    access GitHub.</p>
 
-</br>
+<p>You don't need to worry about this page. Bar for this information, it only hosts the image for your stats, so it can
+    be easily accessed by you.</p>
+
+<p>The link <a id="spanDisplay"></a> is where your stats image is located. </p>
+
+<br/>
+<h3>Add the below line of code to your ReadMe.md in your GitHub profile.</h3>
+<p id="urlDisplay"></p>
+
+<br/>
+<h3>Your graphs will look like the below</h3>
+<p>The two below graphs are your stats when viewed by a user who has light mode or dark mode enabled on their
+    device.</p>
 
 <div id="display">
     <div>
@@ -47,6 +61,24 @@
     </div>
 
 </div>
+
+<script>
+    let url = window.location.href;
+    let postfix = "";
+
+    if (url.slice(-1) !== "/") {
+        postfix += "/";
+    }
+
+    postfix += "data.png";
+    url = url + postfix;
+
+    document.getElementById('spanDisplay').innerText = url;
+    document.getElementById('spanDisplay').href = url;
+
+    document.getElementById('urlDisplay').innerText = '<img src="' + url + '"/>';
+</script>
+
 
 </body>
 </html>
