@@ -32,4 +32,4 @@ ITEM_VADJ = 45
 ITEM_TEXT_HADJ = 4
 
 IMAGE_BORDER_RADIUS = 20
-IMAGE_THEME = get_theme("transparent")
+IMAGE_THEME = get_theme("dark")
