@@ -4,6 +4,8 @@
 name: Lightweight Github Stats
 
 on:
+  workflow_dispatch:
+ 
   push:
     branches: [ "main" ]
 
