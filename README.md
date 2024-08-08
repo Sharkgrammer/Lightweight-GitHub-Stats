@@ -12,14 +12,14 @@ To use stats yourself, you'll need to do a little work:
 1. Fork the Lightweight-GitHub-Stats repository.
 2. Enable Actions in your new forked repo.
 3. If needed, run the "Lightweight GitHub Stats" action once initially.
-4. Once the action has run once, your should be able to access the GitHub page it creates. The url for this should be https://yourusernamehere.GitHub.io/Lightweight-GitHub-Stats/.
+4. Once the action has run once, you should be able to access the GitHub page it creates. The url for this should be https://yourusernamehere.GitHub.io/Lightweight-GitHub-Stats/.
 5. Take the provided img tag the page provides and add it to your profile (or anywhere really).
-6. Celebrate (maybe?)
+6. Celebrate (maybe?).
 
 # Letting Stats Access Private Data
 By default, stats will use your profile and public data. You can change who it gets data for inside of settings.py.
 
-If you want to allow stats to access and display private data, you can provide it was an API key.
+If you want to allow stats to access and display private data, you can provide it with an API key.
 1. Go to your GitHub developer settings and create a new API key/token. It should have read repo access at the least.
 2. In your forked repo, go to settings.
 3. Navigate to "Secrets and variables" and click actions.
@@ -31,7 +31,7 @@ By default if you provide it with an api key it will display everything it can. 
 
 Settings.py contains all the settings used by the program. Want to only display your username and stars? Set most of the variables to false. Wish to change the text size and spacing? Its in there.
 
-It's fiddly and takes some trial and error but it works.
+It's fiddly and takes some trial and error but it works. Of course you could always modify image.py as that is where the image itself is created. 
 
 # Themes
 Stats has a number of themes (and you can extend this) that you can display your stats with. Change them with the IMAGE_THEME setting in settings.py.
@@ -47,4 +47,4 @@ By default, the stats action is run once a week. Personally, I'm happy with that
 Running it often (such as every few minutes) could run into api limits and fair use issues that aren't worthwhile in my opinion.
 
 However that can be changed easily. In the action file you can modify the cron parameters to change how often the stats are updated. 
-In theory the lowest update time would be about 10 minutes, that being about the length of time that GitHub caches the image in your profiles readme before checking for an update.
+In theory the lowest update time would be about 10 minutes, that being about the length of time that GitHub caches the image in your profile's readme before checking for an update.
