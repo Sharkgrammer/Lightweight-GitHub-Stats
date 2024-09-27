@@ -16,6 +16,21 @@ To use stats yourself, you'll need to do a little work:
 5. Take the provided img tag the page provides and add it to your profile (or anywhere really).
 6. Celebrate (maybe?).
 
+# Running Locally
+If you want to generate your stats image locally you can do so. 
+
+First you need install the requirements:
+```
+pip install -r requirements.txt
+```
+
+Then you can run the script:
+```
+python app/main.py YOUR_USERNAME YOUR_API_KEY
+```
+
+data.png will be your stats image generated in your folder for you to use.
+
 # Letting Stats Access Private Data
 By default, stats will use your profile and public data. You can change who it gets data for inside of settings.py.
 

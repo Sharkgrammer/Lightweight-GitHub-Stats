@@ -108,7 +108,7 @@ def add_rounded_corners(img, radius):
 
 
 def add_icon_to_image(img, icon, xy, fill):
-    path = f"./img/{icon}" if s.RUN_LOCALLY else f"./app/img/{icon}"
+    path = f"./img/{icon}" if s.RUN_LOCALLY_PYCHARM else f"./app/img/{icon}"
 
     img_icon = Image.open(path).convert("RGBA")
 
