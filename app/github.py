@@ -86,6 +86,8 @@ def get_item(page, params, url):
 
 
 def get_commits():
+    item_type = "commits"
+
     params = {
         "q": "author:" + base_username,
         "per_page": "100",
@@ -93,10 +95,13 @@ def get_commits():
         "order": "desc",
     }
 
-    get_item_amt("commits", params, "search/commits")
+    get_public(item_type)
+    get_item_amt(item_type, params, "search/commits")
 
 
 def get_issues():
+    item_type = "issues"
+
     params = {
         "q": "author:" + base_username + " type:issue",
         "per_page": "100",
@@ -104,10 +109,13 @@ def get_issues():
         "order": "desc",
     }
 
-    get_item_amt("issues", params, "search/issues")
+    get_public(item_type)
+    get_item_amt(item_type, params, "search/issues")
 
 
 def get_requests():
+    item_type = "requests"
+
     params = {
         "q": "author:" + base_username + " type:pr",
         "per_page": "100",
@@ -115,10 +123,13 @@ def get_requests():
         "order": "desc",
     }
 
-    get_item_amt("requests", params, "search/issues")
+    get_public(item_type)
+    get_item_amt(item_type, params, "search/issues")
 
 
 def get_reviews():
+    item_type = "reviews"
+
     params = {
         "q": "reviewed-by:" + base_username + " type:pr review:approved",
         "per_page": "100",
@@ -126,7 +137,8 @@ def get_reviews():
         "order": "desc",
     }
 
-    get_item_amt("reviews", params, "search/issues")
+    get_public(item_type)
+    get_item_amt(item_type, params, "search/issues")
 
 
 def get_url(end):
@@ -136,8 +148,7 @@ def get_url(end):
 def get_user():
     global base_username
 
-    if not s.PUBLIC:
-        headers["Authorization"] = "Bearer " + key
+    get_public("user")
 
     url = get_url("user" if not s.PUBLIC else "users/" + s.PUBLIC_USER)
 
@@ -160,6 +171,8 @@ def get_repo_data():
     stars = 0
     page = 1
     languages = {}
+
+    get_public("repos")
 
     while True:
         repos = get_repos(url, page)
@@ -200,3 +213,22 @@ def get_repos(url, page):
     response = requests.get(url, params=params, headers=headers)
 
     return response.json()
+
+
+def set_key(val):
+    global key
+
+    key = "Bearer " + val
+
+
+def get_public(item_type):
+    items_setting = {
+        "user": not s.PUBLIC,
+        "repos": s.ALLOW_PRIVATE_REPOS,
+        "commits": s.ALLOW_PRIVATE_COMMITS,
+        "issues": s.ALLOW_PRIVATE_ISSUES,
+        "requests": s.ALLOW_PRIVATE_REQUESTS,
+        "reviews": s.ALLOW_PRIVATE_REVIEWS
+    }
+
+    headers["Authorization"] = key if items_setting[item_type] else ""

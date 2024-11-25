@@ -1,21 +1,24 @@
 from themes import get_theme
 
-# Overall settings
+# Overall settings. If you're running this locally and don't provide
 PUBLIC = False
 PUBLIC_USER = ""
 
-# If you provide a key, use these settings to hide certain data
-ALLOW_PRIVATE_REPOS = True
+# If you provide a key, chose what stats pull in data from private repos
+ALLOW_PRIVATE_REPOS = False
+ALLOW_PRIVATE_COMMITS = True
+ALLOW_PRIVATE_REQUESTS = True
+ALLOW_PRIVATE_REVIEWS = True
+ALLOW_PRIVATE_ISSUES = True
 
+# Graph Settings
+SHOW_TOP_LANGUAGES = True
 DISPLAY_STARS = True
 DISPLAY_REPOS = True
 DISPLAY_COMMITS = True
 DISPLAY_REQUESTS = True
 DISPLAY_REVIEWS = True
 DISPLAY_ISSUES = True
-
-# Graph Settings
-SHOW_TOP_LANGUAGES = True
 
 # Image Settings
 TITLE_FONT_SIZE = 32
@@ -33,5 +36,3 @@ ITEM_TEXT_HADJ = 4
 
 IMAGE_BORDER_RADIUS = 20
 IMAGE_THEME = get_theme("dark")
-
-RUN_LOCALLY_PYCHARM = False

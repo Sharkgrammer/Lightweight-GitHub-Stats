@@ -37,7 +37,7 @@ if len(sys.argv) > 1 and not s.PUBLIC:
     s.PUBLIC_USER = sys.argv[1]
 
 if len(sys.argv) > 2:
-    github.key = sys.argv[2]
+    github.set_key(sys.argv[2])
 else:
     s.PUBLIC = True
 
