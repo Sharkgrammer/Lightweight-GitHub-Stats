@@ -150,7 +150,7 @@ def create_graph(lan):
         max_len = min(3, len(lan))
 
         text = (f"{strings.LAN_PREFIX} {str(max_len) + ' ' if max_len > 1 else ''}{strings.LAN_POSTFIX}"
-                f"{strings.PLURAL_POSTFIX if max_len > 1 else ''}\n")
+                f"{strings.PLURAL_POSTFIX if max_len > 1 else ''}\n") if s.SHOW_TOP_LANGUAGES_TEXT else ""
 
         for x in range(0, max_len):
             text += f"{str(labels[x])}\n"
@@ -160,7 +160,7 @@ def create_graph(lan):
         ax.text(0, 0, text, size="x-large", ha='center', va='center', color=s.IMAGE_THEME["text_col"])
 
     plt.pie(values, labels=labels, textprops={'color': s.IMAGE_THEME["text_col"], 'size': 'medium'},
-            wedgeprops={'width': 0.4})
+            wedgeprops={'width': 0.4}, colors=plt.cm.Paired.colors)
 
     # Finally, convert the figure to a pillow image
     buf = io.BytesIO()
