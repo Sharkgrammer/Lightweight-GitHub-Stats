@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+
+import requests
 from dateutil import parser, tz
 
 
@@ -20,3 +22,9 @@ def is_within_year(date):
     difference = current_date - check_date
 
     return difference <= timedelta(days=365)
+
+
+def get_linguist_colours():
+    response = requests.get("https://raw.githubusercontent.com/ozh/github-colors/master/colors.json")
+
+    return response.json()

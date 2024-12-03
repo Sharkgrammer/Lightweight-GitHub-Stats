@@ -7,6 +7,8 @@ import strings as strings
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
+from app.utils import get_linguist_colours
+
 
 def create_image(data):
     w = 600
@@ -141,6 +143,15 @@ def parse_text(amount, text, yearly=False):
 def create_graph(lan):
     lan = OrderedDict(sorted(lan.items(), key=lambda item: item[1], reverse=True))
 
+    colours = []
+    if not s.USE_LINGUIST_COLOURS:
+        colours = plt.cm.tab10.colors
+    else:
+        all_colours = get_linguist_colours()
+
+        for key in lan:
+            colours.append(all_colours[key]["color"])
+
     labels = list(lan.keys())
     values = list(lan.values())
 
@@ -160,7 +171,7 @@ def create_graph(lan):
         ax.text(0, 0, text, size="x-large", ha='center', va='center', color=s.IMAGE_THEME["text_col"])
 
     plt.pie(values, labels=labels, textprops={'color': s.IMAGE_THEME["text_col"], 'size': 'medium'},
-            wedgeprops={'width': 0.4}, colors=plt.cm.Paired.colors)
+            wedgeprops={'width': 0.4}, colors=colours)
 
     # Finally, convert the figure to a pillow image
     buf = io.BytesIO()
