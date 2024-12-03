@@ -7,7 +7,7 @@ import strings as strings
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
-from app.utils import get_linguist_colours
+from utils import get_linguist_colours
 
 
 def create_image(data):
