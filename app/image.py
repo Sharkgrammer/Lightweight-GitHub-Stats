@@ -11,8 +11,8 @@ from utils import get_linguist_colours
 
 
 def create_image(data):
-    w = 600
-    h = 350
+    w = s.OVERALL_WIDTH
+    h = s.OVERALL_HEIGHT
 
     if "background_col" in s.IMAGE_THEME:
         img = Image.new('RGB', (w, h), color=s.IMAGE_THEME["background_col"])
@@ -51,7 +51,7 @@ def create_image(data):
 
     if len(lan) > 0:
         graph_img = create_graph(data["languages"])
-        img.paste(graph_img, (200, 0 - title_height_adj), graph_img)
+        img.paste(graph_img, (w - s.GRAPH_WIDTH - s.ITEM_STARTING_X, 0 - title_height_adj), graph_img)
 
     # Code for each of the displayed items
     items = {}
@@ -185,6 +185,6 @@ def create_graph(lan):
     fig.savefig(buf, format='png', dpi=200, transparent=True)
 
     buf.seek(0)
-    img = Image.open(buf).resize((400, 400)).convert("RGBA")
+    img = Image.open(buf).resize((s.GRAPH_HEIGHT, s.GRAPH_HEIGHT)).convert("RGBA")
 
     return img
