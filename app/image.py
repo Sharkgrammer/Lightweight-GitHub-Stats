@@ -21,30 +21,37 @@ def create_image(data):
 
     draw = ImageDraw.Draw(img)
 
+    # Font Prep
+    font = ImageFont.load_default(s.ITEM_FONT_SIZE)
+    fill = s.IMAGE_THEME["text_col"]
+
+    # Title code
+    title_height_adj = 0
+
+    if s.SHOW_TITLE_TEXT:
+        title_font = ImageFont.load_default(s.TITLE_FONT_SIZE)
+
+        text = f"{data['name'] if s.TITLE_USE_REAL_NAME else data['username']}{strings.TITLE_POSTFIX}"
+        text_len = title_font.getlength(text)
+
+        y = 10
+        x = (w / 2) - (text_len / 2)
+
+        draw.text((x, y), text, fill=fill, font=title_font)
+
+        y = y + s.TITLE_FONT_SIZE + s.TITLE_LINE_VADJ
+
+        draw.line((x - s.TITLE_LINE_HADJ, y, x + text_len + s.TITLE_LINE_HADJ, y), fill=fill, width=s.TITLE_LINE_WIDTH)
+    else:
+        # If you don't display title, move the contents up to be centered
+        title_height_adj = int((10 + s.TITLE_FONT_SIZE + s.TITLE_LINE_VADJ) / 2)
+
     # Create and add the language graph
     lan = data["languages"]
 
     if len(lan) > 0:
         graph_img = create_graph(data["languages"])
-        img.paste(graph_img, (200, 0), graph_img)
-
-    title_font = ImageFont.load_default(s.TITLE_FONT_SIZE)
-    font = ImageFont.load_default(s.ITEM_FONT_SIZE)
-    fill = s.IMAGE_THEME["text_col"]
-
-    # Title code
-    text = f"{data['name'] if s.TITLE_USE_REAL_NAME else data['username']}{strings.TITLE_POSTFIX}"
-
-    text_len = title_font.getlength(text)
-
-    y = 10
-    x = (w / 2) - (text_len / 2)
-
-    draw.text((x, y), text, fill=fill, font=title_font)
-
-    y = y + s.TITLE_FONT_SIZE + s.TITLE_LINE_VADJ
-
-    draw.line((x - s.TITLE_LINE_HADJ, y, x + text_len + s.TITLE_LINE_HADJ, y), fill=fill, width=s.TITLE_LINE_WIDTH)
+        img.paste(graph_img, (200, 0 - title_height_adj), graph_img)
 
     # Code for each of the displayed items
     items = {}
@@ -67,7 +74,7 @@ def create_image(data):
     if s.DISPLAY_ISSUES:
         items["issue.png"] = parse_text(data['issues'], strings.ITEM_ISSUE, True)
 
-    y = s.ITEM_STARTING_Y
+    y = s.ITEM_STARTING_Y - title_height_adj
     x = s.ITEM_STARTING_X + s.ITEM_IMG_SIZE + s.ITEM_TEXT_HADJ
 
     item_text_adj = int((s.ITEM_FONT_SIZE / 2))
