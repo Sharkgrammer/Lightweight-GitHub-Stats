@@ -47,3 +47,6 @@ IMAGE_THEME = get_theme("dark")
 USE_LINGUIST_COLOURS = True
 SHOW_TOP_LANGUAGES_TEXT = False
 SHOW_TITLE_TEXT = False
+
+# Test
+USE_TEST_DATA = False

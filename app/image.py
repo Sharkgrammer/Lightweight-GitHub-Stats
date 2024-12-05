@@ -10,15 +10,11 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from utils import get_linguist_colours
 
 
-def create_image(data):
+def create_big_image(data):
     w = s.OVERALL_WIDTH
     h = s.OVERALL_HEIGHT
 
-    if "background_col" in s.IMAGE_THEME:
-        img = Image.new('RGB', (w, h), color=s.IMAGE_THEME["background_col"])
-    else:
-        img = Image.new('RGBA', (w, h), color=(255, 255, 255, 0))
-
+    img = setup_background(w, h)
     draw = ImageDraw.Draw(img)
 
     # Font Prep
@@ -50,7 +46,7 @@ def create_image(data):
     lan = data["languages"]
 
     if len(lan) > 0:
-        graph_img = create_graph(data["languages"])
+        graph_img = create_graph(lan, s.GRAPH_WIDTH, s.GRAPH_HEIGHT)
         img.paste(graph_img, (w - s.GRAPH_WIDTH - s.ITEM_STARTING_X, 0 - title_height_adj), graph_img)
 
     # Code for each of the displayed items
@@ -88,32 +84,115 @@ def create_image(data):
 
         y += s.ITEM_VADJ
 
-    if "background_col" in s.IMAGE_THEME:
-        img = add_rounded_corners(img, s.IMAGE_BORDER_RADIUS)
+    img = add_rounded_corners(img, s.IMAGE_BORDER_RADIUS)
 
     img.save("data.png", "PNG", dpi=(300, 300))
-    # img.show()
+
+
+def create_graph_image(data):
+    w = s.OVERALL_WIDTH
+    h = s.OVERALL_HEIGHT
+
+    img = setup_background(w, h)
+
+    lan = data["languages"]
+
+    if len(lan) > 0:
+        graph_height = s.GRAPH_HEIGHT
+        graph_width = s.GRAPH_WIDTH
+
+        if h < graph_height:
+            graph_height = h
+            graph_width = h
+
+        graph_img = create_graph(lan, graph_height, graph_width)
+        img.paste(graph_img, (int((w - graph_width) / 2), 0), graph_img)
+
+    img = add_rounded_corners(img, s.IMAGE_BORDER_RADIUS)
+
+    img.save("graph.png", "PNG", dpi=(300, 300))
+
+
+def create_stats_image(data):
+    w = s.OVERALL_WIDTH
+    h = s.OVERALL_HEIGHT
+
+    img = setup_background(w, h)
+    draw = ImageDraw.Draw(img)
+
+    # Font Prep
+    font = ImageFont.load_default(s.ITEM_FONT_SIZE)
+    fill = s.IMAGE_THEME["text_col"]
+
+    # Code for each of the displayed items
+    items = {}
+
+    if s.DISPLAY_STARS:
+        items["star.png"] = parse_text(data['stars'], strings.ITEM_STAR)
+
+    if s.DISPLAY_REPOS:
+        items["repo.png"] = parse_text(data['repos'], strings.ITEM_REPO)
+
+    if s.DISPLAY_COMMITS:
+        items["commit.png"] = parse_text(data['commits'], strings.ITEM_COMMIT, True)
+
+    if s.DISPLAY_REQUESTS:
+        items["request.png"] = parse_text(data['requests'], strings.ITEM_REQUEST, True)
+
+    if s.DISPLAY_REVIEWS:
+        items["review.png"] = parse_text(data['reviews'], strings.ITEM_REVIEW, True)
+
+    if s.DISPLAY_ISSUES:
+        items["issue.png"] = parse_text(data['issues'], strings.ITEM_ISSUE, True)
+
+    y = s.ITEM_STARTING_Y
+    x = s.ITEM_STARTING_X + s.ITEM_IMG_SIZE + s.ITEM_TEXT_HADJ
+
+    item_text_adj = int((s.ITEM_FONT_SIZE / 2))
+
+    icon_fill = s.IMAGE_THEME["icon_col"]
+
+    for item in items:
+        add_icon_to_image(img, item, (s.ITEM_STARTING_X, y), icon_fill)
+
+        draw.text((x, y + item_text_adj), items[item], fill=fill, font=font)
+
+        y += s.ITEM_VADJ
+
+    img = add_rounded_corners(img, s.IMAGE_BORDER_RADIUS)
+
+    img.save("stats.png", "PNG", dpi=(300, 300))
 
 
 def add_rounded_corners(img, radius):
-    fill = 255
-    double_radius = radius * 2
-    mask = Image.new("L", img.size, 0)
-    draw = ImageDraw.Draw(mask)
-    width, height = img.size
+    if "background_col" in s.IMAGE_THEME:
+        fill = 255
+        double_radius = radius * 2
+        mask = Image.new("L", img.size, 0)
+        draw = ImageDraw.Draw(mask)
+        width, height = img.size
 
-    draw.pieslice((width - double_radius, height - double_radius, width, height), 0, 90, fill=fill)
-    draw.pieslice((0, height - double_radius, double_radius, height), 90, 180, fill=fill)
-    draw.pieslice((0, 0, double_radius, double_radius), 180, 270, fill=fill)
-    draw.pieslice((width - double_radius, 0, width, double_radius), 270, 360, fill=fill)
+        draw.pieslice((width - double_radius, height - double_radius, width, height), 0, 90, fill=fill)
+        draw.pieslice((0, height - double_radius, double_radius, height), 90, 180, fill=fill)
+        draw.pieslice((0, 0, double_radius, double_radius), 180, 270, fill=fill)
+        draw.pieslice((width - double_radius, 0, width, double_radius), 270, 360, fill=fill)
 
-    draw.rectangle((radius, 0, width - radius, height), fill=fill)
-    draw.rectangle((0, radius, width, height - radius), fill=fill)
+        draw.rectangle((radius, 0, width - radius, height), fill=fill)
+        draw.rectangle((0, radius, width, height - radius), fill=fill)
 
-    rounded_image = ImageOps.fit(img, mask.size, method=0, bleed=0.0, centering=(0.5, 0.5))
-    rounded_image.putalpha(mask)
+        rounded_image = ImageOps.fit(img, mask.size, method=0, bleed=0.0, centering=(0.5, 0.5))
+        rounded_image.putalpha(mask)
 
-    return rounded_image
+        return rounded_image
+    else:
+        return img
+
+
+def setup_background(w, h):
+    if "background_col" in s.IMAGE_THEME:
+        return Image.new('RGB', (w, h), color=s.IMAGE_THEME["background_col"])
+    else:
+        return Image.new('RGBA', (w, h), color=(255, 255, 255, 0))
 
 
 def add_icon_to_image(img, icon, xy, fill):
@@ -147,7 +226,7 @@ def parse_text(amount, text, yearly=False):
             f"{strings.ITEM_YEAR if yearly else ''}")
 
 
-def create_graph(lan):
+def create_graph(lan, w, h):
     lan = OrderedDict(sorted(lan.items(), key=lambda item: item[1], reverse=True))
 
     colours = []
@@ -185,6 +264,6 @@ def create_graph(lan):
     fig.savefig(buf, format='png', dpi=200, transparent=True)
 
     buf.seek(0)
-    img = Image.open(buf).resize((s.GRAPH_HEIGHT, s.GRAPH_HEIGHT)).convert("RGBA")
+    img = Image.open(buf).resize((w, h)).convert("RGBA")
 
     return img

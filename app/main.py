@@ -3,6 +3,8 @@ import github as github
 import settings as s
 import sys
 
+from app import utils
+
 
 def run():
     print("Starting")
@@ -26,8 +28,23 @@ def run():
 
     print("Saving Image...")
 
-    # convert data into a nice image
-    image.create_image(github.get_data())
+    data = github.get_data()
+
+    image.create_big_image(data)
+    image.create_graph_image(data)
+    image.create_stats_image(data)
+
+    print("Complete!")
+
+
+def run_with_test():
+    print("Starting")
+    print("Saving Image...")
+    data = utils.get_test_data()
+
+    image.create_big_image(data)
+    image.create_graph_image(data)
+    image.create_stats_image(data)
     print("Complete!")
 
 
@@ -41,4 +58,7 @@ if len(sys.argv) > 2:
 else:
     s.PUBLIC = True
 
-run()
+if s.USE_TEST_DATA:
+    run_with_test()
+else:
+    run()

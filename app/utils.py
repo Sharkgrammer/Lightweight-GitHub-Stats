@@ -28,3 +28,9 @@ def get_linguist_colours():
     response = requests.get("https://raw.githubusercontent.com/ozh/github-colors/master/colors.json")
 
     return response.json()
+
+
+def get_test_data():
+    return {'username': 'Sharkgrammer', 'name': 'Daniel Keane Kelly', 'repos': 12, 'stars': 5,
+            'languages': {'Python': 3, 'TypeScript': 3, 'C': 3, 'HTML': 1, 'Java': 2}, 'commits': 200, 'requests': 3,
+            'reviews': 4, 'issues': 13}
