@@ -3,7 +3,7 @@ import github as github
 import settings as s
 import sys
 
-from app import utils
+from utils import get_test_data
 
 
 def run():
@@ -40,7 +40,7 @@ def run():
 def run_with_test():
     print("Starting")
     print("Saving Image...")
-    data = utils.get_test_data()
+    data = get_test_data()
 
     image.create_big_image(data)
     image.create_graph_image(data)
