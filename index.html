@@ -36,11 +36,25 @@
 <p>You don't need to worry about this page. Bar for this information, it only hosts the image for your stats, so it can
     be easily accessed by you.</p>
 
-<p>The link <a id="spanDisplay"></a> is where your stats image is located. </p>
+<p>The below links are where your stats images are located. </p>
+<p>Add the img tags of your choice to your ReadMe.md in your GitHub profile to use them.</p>
 
-<br/>
-<h3>Add the below line of code to your ReadMe.md in your GitHub profile.</h3>
-<p id="urlDisplay"></p>
+
+<h3>Full data version</h3>
+<hr/>
+<a class="spanDisplay">data.png</a>
+<p class="urlDisplay">Test</p>
+
+<h3>Graph only version</h3>
+<hr/>
+
+<a class="spanDisplay">graph.png</a>
+<p class="urlDisplay">graph.png</p>
+
+<h3>Stats only version</h3>
+<hr/>
+<a class="spanDisplay">stats.png</a>
+<p class="urlDisplay">stats.png</p>
 
 <br/>
 <h3>Your graphs will look like the below</h3>
@@ -93,19 +107,29 @@
 
 <script>
     let url = window.location.href;
-    let postfix = "";
 
     if (url.slice(-1) !== "/") {
-        postfix += "/";
+        url += "/";
     }
 
-    postfix += "data.png";
-    url = url + postfix;
+    let spans = document.getElementsByClassName("spanDisplay");
 
-    document.getElementById('spanDisplay').innerText = url;
-    document.getElementById('spanDisplay').href = url;
+    for (let span of spans) {
+        let data = span.innerText
+        let output = url + data
 
-    document.getElementById('urlDisplay').innerText = '<img src="' + url + '"/>';
+        span.innerText = output;
+        span.href = output;
+    }
+
+    let urls = document.getElementsByClassName("urlDisplay");
+
+    for (let elem of urls) {
+        let data = elem.innerText
+        let output = url + data
+
+        elem.innerText = '<img src="' + output + '"/>';
+    }
 </script>
 
 
