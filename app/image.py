@@ -121,11 +121,13 @@ def create_stats_image(data):
     draw = ImageDraw.Draw(img)
 
     # Font Prep
-    font = ImageFont.load_default(s.ITEM_FONT_SIZE)
+    font = ImageFont.load_default(s.STAT_ITEM_FONT_SIZE)
     fill = s.IMAGE_THEME["text_col"]
+    icon_fill = s.IMAGE_THEME["icon_col"]
 
     # Code for each of the displayed items
     items = {}
+    items_contrib = {}
 
     if s.DISPLAY_STARS:
         items["star.png"] = parse_text(data['stars'], strings.ITEM_STAR)
@@ -134,34 +136,72 @@ def create_stats_image(data):
         items["repo.png"] = parse_text(data['repos'], strings.ITEM_REPO)
 
     if s.DISPLAY_COMMITS:
-        items["commit.png"] = parse_text(data['commits'], strings.ITEM_COMMIT, True)
+        items_contrib["commit.png"] = parse_text(data['commits'], strings.ITEM_COMMIT)
 
     if s.DISPLAY_REQUESTS:
-        items["request.png"] = parse_text(data['requests'], strings.ITEM_REQUEST, True)
+        items_contrib["request.png"] = parse_text(data['requests'], strings.ITEM_REQUEST)
 
     if s.DISPLAY_REVIEWS:
-        items["review.png"] = parse_text(data['reviews'], strings.ITEM_REVIEW, True)
+        items_contrib["review.png"] = parse_text(data['reviews'], strings.ITEM_REVIEW)
 
     if s.DISPLAY_ISSUES:
-        items["issue.png"] = parse_text(data['issues'], strings.ITEM_ISSUE, True)
+        items_contrib["issue.png"] = parse_text(data['issues'], strings.ITEM_ISSUE)
 
-    y = s.ITEM_STARTING_Y
-    x = s.ITEM_STARTING_X + s.ITEM_IMG_SIZE + s.ITEM_TEXT_HADJ
+    y = 200
 
-    item_text_adj = int((s.ITEM_FONT_SIZE / 2))
+    box_size = s.STAT_ITEM_IMG_SIZE * 4
+    item_count = len(items_contrib)
+    total_width = (box_size * item_count) + (s.STAT_LINE_SIZE * item_count - 1)
 
-    icon_fill = s.IMAGE_THEME["icon_col"]
+    x = int((w - total_width) / 2)
 
-    for item in items:
-        add_icon_to_image(img, item, (s.ITEM_STARTING_X, y), icon_fill)
+    text = strings.STAT_TITLE_TEXT
 
-        draw.text((x, y + item_text_adj), items[item], fill=fill, font=font)
+    title_font = ImageFont.load_default(s.STAT_TITLE_FONT_SIZE)
+    text_len = title_font.getlength(text)
 
-        y += s.ITEM_VADJ
+    draw.text(((w / 2) - (text_len / 2), y), text, fill=fill, font=title_font)
+    y += s.STAT_TITLE_FONT_SIZE + s.STAT_TITLE_LINE_VADJ
+
+    draw.line((x, y, x + total_width, y), fill=fill, width=s.STAT_LINE_SIZE)
+
+    y += int(s.STAT_TITLE_LINE_VADJ * 2.5)
+    item_text_adj = int(s.STAT_ITEM_FONT_SIZE / 4)
+
+    counter = 0
+
+    for item in items_contrib:
+        temp_y = y
+        text = items_contrib[item]
+        text_pos = text.index(" ")
+
+        add_icon_to_image(img, item, (x + int((box_size - s.STAT_ITEM_IMG_SIZE) / 2), temp_y), icon_fill,
+                          s.STAT_ITEM_IMG_SIZE)
+
+        temp_y += s.STAT_ITEM_IMG_SIZE + item_text_adj
+
+        draw_stats_text_data(draw, text[0:text_pos], x, temp_y, box_size, fill, font)
+        temp_y += s.STAT_ITEM_FONT_SIZE + item_text_adj
+
+        draw_stats_text_data(draw, text[text_pos:len(text)], x, temp_y, box_size, fill, font)
+
+        x += box_size
+
+        if counter < item_count - 1:
+            draw.line((x, y - s.STAT_LINE_ADJ, x, temp_y + s.STAT_ITEM_FONT_SIZE + item_text_adj + s.STAT_LINE_ADJ),
+                      fill=fill, width=s.STAT_LINE_SIZE)
+
+        counter += 1
 
     img = add_rounded_corners(img, s.IMAGE_BORDER_RADIUS)
 
     img.save("stats.png", "PNG", dpi=(300, 300))
+
+
+def draw_stats_text_data(draw, text, x, y, box_size, fill, font):
+    size = font.getlength(text)
+
+    draw.text((x + int(abs(box_size - size) / 2), y), text, fill=fill, font=font)
 
 
 def add_rounded_corners(img, radius):
@@ -195,7 +235,7 @@ def setup_background(w, h):
         return Image.new('RGBA', (w, h), color=(255, 255, 255, 0))
 
 
-def add_icon_to_image(img, icon, xy, fill):
+def add_icon_to_image(img, icon, xy, fill, size=s.ITEM_IMG_SIZE):
     path = f"./app/img/{icon}"
 
     img_icon = Image.open(path).convert("RGBA")
@@ -213,7 +253,7 @@ def add_icon_to_image(img, icon, xy, fill):
 
     img_icon.putdata(changed_img)
 
-    img_icon = img_icon.resize((s.ITEM_IMG_SIZE, s.ITEM_IMG_SIZE))
+    img_icon = img_icon.resize((size, size))
 
     img.paste(img_icon, xy, img_icon)
 
@@ -254,9 +294,9 @@ def create_graph(lan, w, h):
 
         text = text[:-1]
 
-        ax.text(0, 0, text, size="x-large", ha='center', va='center', color=s.IMAGE_THEME["text_col"])
+        ax.text(0, 0, text, fontsize=s.GRAPH_FONT_SIZE, ha='center', va='center', color=s.IMAGE_THEME["text_col"])
 
-    plt.pie(values, labels=labels, textprops={'color': s.IMAGE_THEME["text_col"], 'size': 'medium'},
+    plt.pie(values, labels=labels, textprops={'color': s.IMAGE_THEME["text_col"], 'fontsize': s.GRAPH_FONT_SIZE},
             wedgeprops={'width': 0.4}, colors=colours)
 
     # Finally, convert the figure to a pillow image

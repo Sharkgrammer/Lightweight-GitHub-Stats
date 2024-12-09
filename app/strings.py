@@ -14,3 +14,5 @@ LAN_PREFIX = "Top"
 LAN_POSTFIX = "Language"
 
 ZERO_TEXT = "No"
+
+STAT_TITLE_TEXT = "Contributions Over the Last Year"
