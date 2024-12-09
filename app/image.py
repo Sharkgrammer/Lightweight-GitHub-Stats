@@ -282,7 +282,6 @@ def create_graph(lan, w, h):
     values = list(lan.values())
 
     fig, ax = plt.subplots(figsize=(6, 6))
-
     if s.SHOW_TOP_LANGUAGES:
         max_len = min(3, len(lan))
 
@@ -299,9 +298,12 @@ def create_graph(lan, w, h):
     plt.pie(values, labels=labels, textprops={'color': s.IMAGE_THEME["text_col"], 'fontsize': s.GRAPH_FONT_SIZE},
             wedgeprops={'width': 0.4}, colors=colours)
 
+    start, end = 0.15, 0.85
+    fig.subplots_adjust(bottom=start, top=end, left=start, right=end)
+
     # Finally, convert the figure to a pillow image
     buf = io.BytesIO()
-    fig.savefig(buf, format='png', dpi=200, transparent=True)
+    fig.savefig(buf, format='png', transparent=True)
 
     buf.seek(0)
     img = Image.open(buf).resize((w, h)).convert("RGBA")
