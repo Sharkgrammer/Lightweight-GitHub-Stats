@@ -37,17 +37,21 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Check Github API and generate image
-        id: run_test
+        id: run_script
         run: |
           python app/main.py ${{ github.actor }} ${{ secrets.api_key }}
-          echo "::set-output name=file_path::${PWD}/data.png"
+          echo "::set-output name=data_image::${PWD}/data.png"
+          echo "::set-output name=graph_image::${PWD}/graph.png"
+          echo "::set-output name=stats_image::${PWD}/stats.png"
 
       - name: Upload to artifact
         uses: actions/upload-artifact@v4
         with:
           name: page-build
           path: |
-            ${{ steps.run_test.outputs.file_path }}
+            ${{ steps.run_script.outputs.data_image }}
+            ${{ steps.run_script.outputs.graph_image }}
+            ${{ steps.run_script.outputs.stats_image }}
             index.html
             favicon.ico
   
