@@ -32,5 +32,5 @@ def get_linguist_colours():
 
 def get_test_data():
     return {'username': 'Sharkgrammer', 'name': 'Daniel Keane Kelly', 'repos': 12, 'stars': 5,
-            'languages': {'Python': 3, 'TypeScript': 3, 'C': 3, 'HTML': 1, 'Java': 2}, 'commits': 200, 'requests': 3,
-            'reviews': 4, 'issues': 13}
+            'languages': {'Python': 10, 'ShaderLab': 1, 'TypeScript': 8, 'C': 3, 'HTML': 3, 'Java': 5},
+            'commits': 200, 'requests': 3, 'reviews': 4, 'issues': 13}

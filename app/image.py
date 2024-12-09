@@ -86,7 +86,7 @@ def create_big_image(data):
 
     img = add_rounded_corners(img, s.IMAGE_BORDER_RADIUS)
 
-    img.save("data.png", "PNG", dpi=(300, 300))
+    img.save("data.png", "PNG")
 
 
 def create_graph_image(data):
@@ -110,7 +110,7 @@ def create_graph_image(data):
 
     img = add_rounded_corners(img, s.IMAGE_BORDER_RADIUS)
 
-    img.save("graph.png", "PNG", dpi=(300, 300))
+    img.save("graph.png", "PNG")
 
 
 def create_stats_image(data):
@@ -121,7 +121,6 @@ def create_stats_image(data):
     draw = ImageDraw.Draw(img)
 
     # Font Prep
-    font = ImageFont.load_default(s.STAT_ITEM_FONT_SIZE)
     fill = s.IMAGE_THEME["text_col"]
     icon_fill = s.IMAGE_THEME["icon_col"]
 
@@ -147,7 +146,44 @@ def create_stats_image(data):
     if s.DISPLAY_ISSUES:
         items_contrib["issue.png"] = parse_text(data['issues'], strings.ITEM_ISSUE)
 
-    y = 200
+    font = ImageFont.load_default(s.STAT_MAIN_ITEM_FONT_SIZE)
+
+    y = s.STAT_STARTING_Y
+    counter = 0
+
+    box_size = s.STAT_MAIN_ITEM_IMG_SIZE * 4
+    item_count = len(items)
+    total_width = (box_size * item_count) + (s.STAT_LINE_SIZE * item_count - 1)
+    x = int((w - total_width) / 2)
+    item_text_adj = int(s.STAT_MAIN_ITEM_FONT_SIZE / 5)
+
+    for item in items:
+        temp_y = y
+        text = items[item]
+        text_pos = text.index(" ")
+
+        add_icon_to_image(img, item, (x + int((box_size - s.STAT_MAIN_ITEM_IMG_SIZE) / 2), temp_y), icon_fill,
+                          s.STAT_MAIN_ITEM_IMG_SIZE)
+
+        temp_y += s.STAT_MAIN_ITEM_IMG_SIZE + item_text_adj
+
+        draw_stats_text_data(draw, text[0:text_pos], x, temp_y, box_size, fill, font)
+        temp_y += s.STAT_MAIN_ITEM_FONT_SIZE + item_text_adj
+
+        draw_stats_text_data(draw, text[text_pos:len(text)], x, temp_y, box_size, fill, font)
+
+        x += box_size
+
+        if counter < 2 - 1:
+            draw.line(
+                (x, y - s.STAT_LINE_ADJ, x, temp_y + s.STAT_MAIN_ITEM_FONT_SIZE + item_text_adj + s.STAT_LINE_ADJ),
+                fill=fill, width=s.STAT_LINE_SIZE)
+
+        counter += 1
+
+    y += s.STAT_MAIN_ITEM_IMG_SIZE + (s.STAT_MAIN_ITEM_FONT_SIZE * 2) + (item_text_adj * 2) + (s.STAT_LINE_ADJ * 2)
+
+    font = ImageFont.load_default(s.STAT_ITEM_FONT_SIZE)
 
     box_size = s.STAT_ITEM_IMG_SIZE * 4
     item_count = len(items_contrib)
@@ -195,7 +231,7 @@ def create_stats_image(data):
 
     img = add_rounded_corners(img, s.IMAGE_BORDER_RADIUS)
 
-    img.save("stats.png", "PNG", dpi=(300, 300))
+    img.save("stats.png", "PNG")
 
 
 def draw_stats_text_data(draw, text, x, y, box_size, fill, font):
@@ -291,9 +327,7 @@ def create_graph(lan, w, h):
         for x in range(0, max_len):
             text += f"{str(labels[x])}\n"
 
-        text = text[:-1]
-
-        ax.text(0, 0, text, fontsize=s.GRAPH_FONT_SIZE, ha='center', va='center', color=s.IMAGE_THEME["text_col"])
+        ax.text(0, 0, text[:-1], fontsize=s.GRAPH_FONT_SIZE, ha='center', va='center', color=s.IMAGE_THEME["text_col"])
 
     plt.pie(values, labels=labels, textprops={'color': s.IMAGE_THEME["text_col"], 'fontsize': s.GRAPH_FONT_SIZE},
             wedgeprops={'width': 0.4}, colors=colours)
