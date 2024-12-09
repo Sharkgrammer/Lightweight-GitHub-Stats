@@ -63,3 +63,18 @@ Running it often (such as every few minutes) could run into api limits and fair 
 
 However that can be changed easily. In the action file you can modify the cron parameters to change how often the stats are updated. 
 In theory the lowest update time would be about 10 minutes, that being about the length of time that GitHub caches the image in your profile's readme before checking for an update.
+
+# Sharkgrammer current examples
+These are the ones currently in use by Sharkgrammer and are a good example of what the current settings template looks like.
+
+---
+
+![Full image](https://www.danielkeanekelly.com/Lightweight-GitHub-Stats/data.png)
+
+--- 
+
+![Graph only](https://www.danielkeanekelly.com/Lightweight-GitHub-Stats/graph.png)
+
+---
+
+![Stats only](https://www.danielkeanekelly.com/Lightweight-GitHub-Stats/stats.png)
